@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import numpy as np
 import pandas as pd
 
-from sklearn.preprocessing import Imputer
+from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
 
 from keras.utils import np_utils
@@ -101,7 +101,7 @@ def impute_and_scale_array(mat, scaling=None):
         it returns the imputed numpy array.
     """
 
-    imputer = Imputer(strategy='mean', axis=0, copy=False)
+    imputer = SimpleImputer(strategy='mean', axis=0, copy=False)
     imputer.fit_transform(mat)
     #mat = imputer.fit_transform(mat)
 

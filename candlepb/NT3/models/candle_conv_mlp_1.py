@@ -1,10 +1,12 @@
 import tensorflow as tf
 
-from deephyper.search.nas.model.space.node import ConstantNode, VariableNode
-from deephyper.search.nas.model.space.op.op1d import (Activation, Conv1D,
+from deephyper.nas.space.node import ConstantNode, VariableNode
+from deephyper.nas.space.op.op1d import (Activation, Conv1D,
                                                       Dense, Dropout, Flatten,
                                                       Identity, MaxPooling1D)
-from deephyper.search.nas.model.space.struct import AutoOutputStructure
+
+from deephyper.nas.space.auto_keras_search_space import AutoKSearchSpace
+
 
 def add_conv_op_(node):
     node.add_op(Identity())
@@ -47,7 +49,7 @@ def add_dropout_op_(node):
     node.add_op(Dropout(rate=0.05))
 
 def create_structure(input_shape=(2,), output_shape=(1,), *args, **kwargs):
-    struct = AutoOutputStructure(input_shape, output_shape, regression=False)
+    struct = AutoKSearchSpace(input_shape, output_shape, regression=False)
 
     n1 = VariableNode('N')
     add_conv_op_(n1)

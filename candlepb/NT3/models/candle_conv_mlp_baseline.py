@@ -1,16 +1,17 @@
 import tensorflow as tf
 
-from deephyper.search.nas.model.space.node import ConstantNode
-from deephyper.search.nas.model.space.op.op1d import (Activation, Conv1D,
+from deephyper.nas.space.node import ConstantNode
+from deephyper.nas.space.op.op1d import (Activation, Conv1D,
                                                       Dense, Dropout, Flatten,
                                                       Identity, MaxPooling1D)
-from deephyper.search.nas.model.space.struct import AutoOutputStructure
+from deephyper.nas.space.auto_keras_search_space import AutoKSearchSpace
 
 
 def create_structure(input_shape=(2,), output_shape=(1,), *args, **kwargs):
-    struct = AutoOutputStructure(input_shape, output_shape, regression=False)
+    struct = AutoKSearchSpace(input_shape, output_shape, regression=False)
 
     n1 = ConstantNode(op=Conv1D(filter_size=20, num_filters=128), name='N')
+    
     struct.connect(struct.input_nodes[0], n1)
 
     n2 = ConstantNode(op=Activation(activation='relu'), name='N')
