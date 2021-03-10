@@ -26,22 +26,22 @@ Problem.metrics(['r2'])
 
 Problem.objective('val_r2__last')
 
-Problem.post_training(
-    num_epochs=1000,
-    metrics=['r2'],
-    model_checkpoint={
-        'monitor': 'val_r2',
-        'mode': 'max',
-        'save_best_only': True,
-        'verbose': 1
-    },
-    early_stopping={
-        'monitor': 'val_r2',
-        'mode': 'max',
-        'verbose': 1,
-        'patience': 20
-    }
-)
+# Problem.post_training(
+#     num_epochs=1000,
+#     metrics=['r2'],
+#     # model_checkpoint={
+#     #     'monitor': 'val_r2',
+#     #     'mode': 'max',
+#     #     'save_best_only': True,
+#     #     'verbose': 1
+#     # },
+#     early_stopping={
+#         'monitor': 'val_r2',
+#         'mode': 'max',
+#         'verbose': 1,
+#         'patience': 20
+#     }
+# )
 
 if __name__ == '__main__':
     print(Problem)

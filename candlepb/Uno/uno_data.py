@@ -12,7 +12,7 @@ import pandas as pd
 
 from itertools import cycle, islice
 
-from sklearn.preprocessing import Imputer
+from sklearn.impute import SimpleImputer as Imputer
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, MaxAbsScaler
 from sklearn.model_selection import ShuffleSplit, KFold
 
