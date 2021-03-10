@@ -1,14 +1,15 @@
 import tensorflow as tf
 
-from deephyper.search.nas.model.space.node import ConstantNode, VariableNode
-from deephyper.search.nas.model.space.op.merge import AddByPadding, Concatenate
-from deephyper.search.nas.model.space.op.op1d import Dense, Dropout, Identity
-from deephyper.search.nas.model.space.struct import AutoOutputStructure
+from deephyper.nas.space.node import ConstantNode, VariableNode
+from deephyper.nas.space.op.merge import AddByPadding, Concatenate
+from deephyper.nas.space.op.op1d import Dense, Dropout, Identity
+from deephyper.nas.space.auto_keras_search_space import AutoKSearchSpace
+# from deephyper.search.nas.model.space.struct import AutoOutputStructure
 
 
 def create_structure(input_shape=[(1, ), (942, ), (5270, ), (2048, )], output_shape=(1,), num_cells=2, *args, **kwargs):
 
-    struct = AutoOutputStructure(input_shape, output_shape, regression=True)
+    struct = AutoKSearchSpace(input_shape, output_shape, regression=True)
     input_nodes = struct.input_nodes
 
     output_submodels = [input_nodes[0]]
@@ -26,7 +27,8 @@ def create_structure(input_shape=[(1, ), (942, ), (5270, ), (2048, )], output_sh
         output_submodels.append(cnode3)
 
     merge1 = ConstantNode(name='Merge')
-    merge1.set_op(Concatenate(struct, merge1, output_submodels))
+    # merge1.set_op(Concatenate(struct, merge1, output_submodels))
+    merge1.set_op(Concatenate(struct,  output_submodels))
 
     cnode4 = ConstantNode(name='N', op=Dense(1000, tf.nn.relu))
     struct.connect(merge1, cnode4)
@@ -39,7 +41,8 @@ def create_structure(input_shape=[(1, ), (942, ), (5270, ), (2048, )], output_sh
 
 
         merge = ConstantNode(name='Merge')
-        merge.set_op(AddByPadding(struct, merge, [cnode, prev]))
+        # merge.set_op(AddByPadding(struct, merge, [cnode, prev]))
+        merge.set_op(AddByPadding(struct, [cnode, prev]))
 
         prev = merge
 

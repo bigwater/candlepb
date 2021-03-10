@@ -74,7 +74,8 @@ def impute_and_scale(df, scaling='std', imputing='mean', dropna='all'):
     if imputing is None or imputing.lower() == 'none':
         mat = df.values
     else:
-        imputer = Imputer(strategy=imputing, axis=0)
+        # imputer = Imputer(strategy=imputing, axis=0)
+        imputer = Imputer(strategy=imputing)
         mat = imputer.fit_transform(df)
 
     if scaling is None or scaling.lower() == 'none':
@@ -131,7 +132,9 @@ def load_combined_dose_response(rename=True):
 
 def load_single_dose_response(combo_format=False, fraction=True):
     # path = get_file(DATA_URL + 'combined_single_drug_growth')
+
     path = get_file(DATA_URL + 'rescaled_combined_single_drug_growth')
+    # path = get_file('/home/hyliu/work/rescaled_combined_single_drug_growth')
 
     df = global_cache.get(path)
     if df is None:
