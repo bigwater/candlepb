@@ -107,6 +107,66 @@ def mae(y_true, y_pred):
     return keras.metrics.mean_absolute_error(y_true, y_pred)
 
 
+def basic_train(model, X_train, Y_train, X_test, Y_test):
+    model.compile(loss='mse', optimizer='adam', metrics=['mse'])
+    history = model.fit(X_train, Y_train,
+                                batch_size=64,
+                                epochs=4,
+                                validation_data=(X_test, Y_test))
+    print(history.history)
+
+
+def loop_train(model, X_train, Y_train, X_test, Y_test):
+    from tensorflow import keras
+    import tensorflow as tf
+    
+    batch_size = 64
+    optimizer = keras.optimizers.Adam()
+    
+    # print(Y_train.shape)
+    # x train is a list of ndarray
+
+    # print(([*X_train], Y_train))
+
+    train_dataset =  tf.data.Dataset.from_tensor_slices((*X_train, Y_train)).shuffle(buffer_size=2048).batch(batch_size)
+    val_dataset = tf.data.Dataset.from_tensor_slices((*X_test, Y_test)).batch(batch_size)
+
+    loss_fn = keras.losses.MeanSquaredError()
+    train_acc_metric = keras.metrics.MeanSquaredError()
+    val_acc_metric   = keras.metrics.MeanSquaredError()
+    
+    @tf.function
+    def train_step(x, y):
+        with tf.GradientTape() as tape:
+            logits = model(x, training=True)
+            loss_value = loss_fn(y, logits)
+        grads = tape.gradient(loss_value, model.trainable_weights)
+        optimizer.apply_gradients(zip(grads, model.trainable_weights))
+        train_acc_metric.update_state(y, logits)
+        return loss_value
+    
+
+    @tf.function
+    def test_step(x, y):
+        val_logits = model(x, training=False)
+        val_acc_metric.update_state(y, val_logits)
+    
+    for epoch in range(4):
+        for step, XY in enumerate(train_dataset):
+            x_batch_train = list(XY[:-1])
+            y_batch_train = XY[-1]
+            train_step(x_batch_train, y_batch_train)
+        
+        print('train mse = ', float(train_acc_metric.result()))
+        train_acc_metric.reset_states()
+
+        for XY in val_dataset:
+            test_step(list(XY[:-1]), XY[-1])
+        
+        print('val mse = ', float(val_acc_metric.result()))
+
+        
+
 if __name__ == '__main__':
     model = test_create_structure()
     
@@ -118,13 +178,12 @@ if __name__ == '__main__':
     print000(X_test)
     print000(Y_test)
 
-    model.compile(loss='mse', optimizer='adam', metrics=[mae])
-    history = model.fit(X_train, Y_train,
-                                batch_size=64,
-                                epochs=4,
-                                validation_data=(X_test, Y_test))
-    print(history.history)
-    
+    loop_train(model, X_train, Y_train, X_test, Y_test)
+    # basic_train(model, X_train, Y_train, X_test, Y_test)
+    # model = test_create_structure()
 
+
+
+### training loop . 
 
 
