@@ -1,13 +1,14 @@
 
 from deephyper.benchmark import NaProblem
 from candlepb.Uno.structs.uno_hyliu1 import create_structure
-from candlepb.Uno.uno_baseline_keras2 import load_data_multi_array
+from candlepb.Uno.uno_baseline_keras2 import load_data_multi_array, load_data_multi_array_fake
 
 
 
 Problem = NaProblem()
 
-Problem.load_data(load_data_multi_array)
+# Problem.load_data(load_data_multi_array)
+Problem.load_data(load_data_multi_array_fake)
 
 Problem.search_space(create_structure, num_cells=3)
 

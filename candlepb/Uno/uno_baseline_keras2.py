@@ -590,6 +590,17 @@ def load_data_multi_array():
     x_valids = [data[f'x_val_{i}'] for i in range(4)]
     return (x_trains, data['y_train']), (x_valids, data['y_val'])
 
+
+def load_data_multi_array_fake():
+    x_train_shape = [(9588, 1), (9588, 942), (9588, 5270), (9588, 2048)]
+    y_train_shape = (9588, )
+    x_test_shape = [(2397, 1), (2397, 942), (2397, 5270), (2397, 2048)]
+    y_test_shape = [(2397,)]
+
+    return [np.zeros(i) for i in x_train_shape], np.zeros(y_train_shape), [np.zeros(i) for i in x_test_shape], np.zeros(y_test_shape)
+
+
+
 # @numpy_dict_cache('/projects/datascience/regele/data-tmp/uno_data_rdm.npz')
 def load_data1():
     return load_data_source()
