@@ -89,5 +89,42 @@ def test_create_structure():
 
     model.summary()
 
+    return model
+
+
+def print000(x):
+    if type(x) == list:
+        print("(")
+        for i in x:
+            print(i.shape)
+        print(")")
+    else:
+        print(x.shape)
+
+
+def mae(y_true, y_pred):
+    import keras
+    return keras.metrics.mean_absolute_error(y_true, y_pred)
+
+
 if __name__ == '__main__':
-    test_create_structure()
+    model = test_create_structure()
+    
+    from candlepb.Uno.uno_baseline_keras2 import load_data_multi_array as load_data
+    (X_train, Y_train), (X_test, Y_test) = load_data()
+
+    print000(X_train)
+    print000(Y_train)
+    print000(X_test)
+    print000(Y_test)
+
+    model.compile(loss='mse', optimizer='adam', metrics=[mae])
+    history = model.fit(X_train, Y_train,
+                                batch_size=64,
+                                epochs=4,
+                                validation_data=(X_test, Y_test))
+    print(history.history)
+    
+
+
+
